@@ -180,7 +180,7 @@
 	<script>
 
 	// Add a column of output to a tool
-	function addOutput( outputid, headertext, list ){
+	function addOutput( outputid, headertext, list){
 		var outputdiv = document.createElement('div');
 		outputdiv.className = "checkoutput";
 		document.getElementById(outputid).appendChild(outputdiv);
@@ -189,7 +189,7 @@
 		header.textContent = headertext;
 		outputdiv.appendChild(header);
 
-		outputdiv.appendChild(list);        
+		outputdiv.appendChild(list);
 	}  
 
 	// Build a link to an object
@@ -220,10 +220,23 @@
 		orcid.setAttribute('target', '_blank');
 		div.appendChild(orcid);		
 		return div;
-	}   
+	} 
+
+	function buildAnchorWithCatalogue(object, linkcode){
+		var div = document.createElement('div');
+		
+		var a = document.createElement('a');
+		a.textContent = "[Search catalogue]";
+
+		a.setAttribute('href', "http://catalogue.library.carleton.ca/search/?searchtype=t&SORT=D&searcharg=" + object['name'] + "&searchscope=9&submit=Submit");
+		a.setAttribute('target', '_blank');
+		div.appendChild(a);
+		
+		return div;
+	}
 	
 	// Build a ul element from an array of objects
-	function buildList( objects, comparefunc, linkcode, labels=false, orcid=false ){
+	function buildList( objects, comparefunc, linkcode, labels=false, orcid=false, searchcat=false){
 		objects.sort(comparefunc);
 
 		var list = document.createElement('ul');
@@ -242,6 +255,11 @@
 					label.textContent += object['labels'][j] + " ";
 				}
 				li.appendChild(label);
+			}
+			if(searchcat){
+				li.appendChild(buildAnchorWithCatalogue(object, linkcode));
+			} else {
+				li.appendChild(buildAnchor(object, linkcode));
 			}
 			list.appendChild(li);
 		}   
@@ -872,7 +890,7 @@
 
 		addOutput("pub-output", 
 					"Publications of type book with no Attachments of type borrow → " + bookWithoutAttachmentTypeBorrow.length, 
-					buildList(bookWithoutAttachmentTypeBorrow, comparepubs, 'pub'));
+					buildList(bookWithoutAttachmentTypeBorrow, comparepubs, 'pub', false, false, true));
 		
 
 	}
